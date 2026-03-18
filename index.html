@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BITPT 270 — SLSMC Project Portal</title>
+    <!-- ZERO EXTERNAL DEPENDENCIES — GitHub API sync built-in -->
+    <style>
+        :root {
+            --dark-blue: #001E35;
+            --vermilion: #F12300;
+            --light-vermilion: #FFF3F0;
+            --bg: #f4f6f9;
+            --card: #ffffff;
+            --text: #1a1a2e;
+            --text-sec: #6c757d;
+            --green: #22c55e;
+            --yellow: #f59e0b;
+            --blue: #3b82f6;
+            --red: #ef4444;
+            --gray: #94a3b8;
+            --gap: 16px;
+            --radius: 10px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+        .container { max-width: 1440px; margin: 0 auto; padding: var(--gap); }
+
+        /* Header */
+        .header { background: linear-gradient(135deg, var(--dark-blue) 0%, #003055 100%); color: #fff; padding: 24px 32px; border-radius: var(--radius); margin-bottom: var(--gap); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+        .header h1 span { color: var(--vermilion); }
+        .header-meta { font-size: 13px; opacity: 0.8; }
+        .header-right { display: flex; gap: 12px; align-items: center; }
+        .btn { padding: 8px 16px; border-radius: 6px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .btn-primary { background: var(--vermilion); color: #fff; }
+        .btn-primary:hover { background: #d41f00; }
+        .btn-outline { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+        .btn-outline:hover { background: rgba(255,255,255,0.1); }
+        .btn-green { background: var(--green); color: #fff; }
+        .btn-green:hover { background: #16a34a; }
+        .sync-indicator { font-size: 11px; opacity: 0.8; display: flex; align-items: center; gap: 6px; }
+        .sync-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .sync-dot.connected { background: var(--green); }
+        .sync-dot.disconnected { background: var(--yellow); }
+        .sync-dot.syncing { background: var(--blue); animation: pulse 1s infinite; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* KPI Row */
+        .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--gap); margin-bottom: var(--gap); }
+        .kpi { background: var(--card); border-radius: var(--radius); padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border-left: 4px solid var(--gray); }
+        .kpi.green { border-left-color: var(--green); }
+        .kpi.yellow { border-left-color: var(--yellow); }
+        .kpi.blue { border-left-color: var(--blue); }
+        .kpi.red { border-left-color: var(--vermilion); }
+        .kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-sec); margin-bottom: 4px; }
+        .kpi-value { font-size: 32px; font-weight: 800; }
+        .kpi-sub { font-size: 12px; color: var(--text-sec); margin-top: 2px; }
+
+        /* Sections */
+        .section { background: var(--card); border-radius: var(--radius); padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); margin-bottom: var(--gap); }
+        .section-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .section-title .badge { font-size: 11px; background: var(--dark-blue); color: #fff; padding: 2px 8px; border-radius: 10px; }
+        .section-title .badge-green { font-size: 11px; background: var(--green); color: #fff; padding: 2px 8px; border-radius: 10px; }
+
+        /* Phase bars */
+        .phase-row { display: flex; align-items: center; margin-bottom: 12px; }
+        .phase-label { width: 200px; font-size: 13px; font-weight: 600; flex-shrink: 0; }
+        .phase-label small { font-weight: 400; color: var(--text-sec); display: block; font-size: 11px; }
+        .phase-bar-wrap { flex: 1; height: 32px; background: #e9ecef; border-radius: 6px; position: relative; overflow: hidden; }
+        .phase-bar { height: 100%; border-radius: 6px; transition: width 0.5s ease; display: flex; align-items: center; padding-left: 10px; font-size: 12px; font-weight: 700; color: #fff; min-width: 40px; }
+        .phase-bar.p0 { background: linear-gradient(90deg, #6366f1, #818cf8); }
+        .phase-bar.p1 { background: linear-gradient(90deg, var(--blue), #60a5fa); }
+        .phase-bar.p2 { background: linear-gradient(90deg, var(--yellow), #fbbf24); }
+        .phase-bar.p3 { background: linear-gradient(90deg, var(--green), #4ade80); }
+        .phase-bar.p4 { background: linear-gradient(90deg, var(--vermilion), #f87171); }
+        .phase-dates { width: 160px; text-align: right; font-size: 11px; color: var(--text-sec); flex-shrink: 0; padding-left: 12px; }
+
+        /* Two column */
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); margin-bottom: var(--gap); }
+        @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+
+        /* CSS Bar Chart */
+        .css-chart { display: flex; align-items: flex-end; gap: 12px; height: 200px; padding: 0 8px; border-bottom: 2px solid #e2e8f0; margin-bottom: 8px; }
+        .css-bar-group { flex: 1; display: flex; gap: 3px; align-items: flex-end; justify-content: center; position: relative; }
+        .css-bar { border-radius: 4px 4px 0 0; transition: height 0.4s ease; min-width: 16px; position: relative; }
+        .css-bar:hover { opacity: 0.85; }
+        .css-bar-val { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 10px; font-weight: 700; white-space: nowrap; }
+        .css-bar-label { text-align: center; font-size: 11px; color: var(--text-sec); margin-top: 6px; line-height: 1.2; }
+        .chart-legend { display: flex; gap: 16px; justify-content: center; margin-top: 12px; }
+        .legend-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-sec); }
+        .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+        /* CSS Donut */
+        .donut-wrap { display: flex; align-items: center; gap: 24px; justify-content: center; }
+        .donut { width: 160px; height: 160px; border-radius: 50%; position: relative; }
+        .donut-hole { width: 90px; height: 90px; background: var(--card); border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; flex-direction: column; }
+        .donut-hole .big { font-size: 24px; font-weight: 800; color: var(--text); }
+        .donut-hole .small { font-size: 10px; color: var(--text-sec); }
+        .donut-legend { font-size: 13px; }
+        .donut-legend-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .donut-legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+        .donut-legend-label { color: var(--text-sec); }
+        .donut-legend-val { font-weight: 700; margin-left: auto; }
+
+        /* Session Cards */
+        .session-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: var(--gap); margin-bottom: var(--gap); }
+        .session-card { background: var(--card); border-radius: var(--radius); box-shadow: 0 1px 3px rgba(0,0,0,0.06); overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
+        .session-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .session-card-header { padding: 16px 20px; color: #fff; display: flex; justify-content: space-between; align-items: center; }
+        .session-card-header.s1 { background: var(--blue); }
+        .session-card-header.s2 { background: #6366f1; }
+        .session-card-header.s3 { background: #8b5cf6; }
+        .session-card-header.s4 { background: #d97706; }
+        .session-card-header.s5 { background: var(--green); }
+        .session-card-header.s6 { background: var(--vermilion); }
+        .session-card-header h3 { font-size: 14px; font-weight: 700; }
+        .session-card-header .date { font-size: 12px; opacity: 0.9; }
+        .session-card-body { padding: 16px 20px; }
+        .session-card-body .deliverables { font-size: 12px; color: var(--text-sec); margin-bottom: 10px; }
+        .session-card-body .deliverables span { background: var(--light-vermilion); color: var(--vermilion); padding: 1px 6px; border-radius: 4px; font-weight: 600; margin-right: 4px; }
+        .session-obj { margin-bottom: 4px; padding-left: 14px; position: relative; font-size: 13px; }
+        .session-obj::before { content: '\2022'; position: absolute; left: 0; }
+        .session-stat { margin-top: 10px; font-size: 12px; color: var(--text-sec); }
+
+        /* Task Table */
+        .task-filters { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+        .task-filter-btn { padding: 6px 14px; border-radius: 20px; border: 1px solid #e2e8f0; background: #fff; font-size: 12px; cursor: pointer; font-weight: 500; transition: all 0.2s; }
+        .task-filter-btn.active { background: var(--dark-blue); color: #fff; border-color: var(--dark-blue); }
+        .task-filter-btn:hover:not(.active) { background: #f1f5f9; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        thead th { text-align: left; padding: 10px 12px; border-bottom: 2px solid #e2e8f0; color: var(--text-sec); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; white-space: nowrap; cursor: pointer; user-select: none; }
+        thead th:hover { color: var(--text); }
+        tbody td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+        tbody tr:hover { background: #fafbfc; }
+        tbody tr.completed-row td { opacity: 0.55; text-decoration: line-through; }
+
+        .status-select { padding: 4px 8px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 12px; background: #fff; cursor: pointer; }
+        .check-toggle { width: 18px; height: 18px; border: 2px solid #cbd5e1; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+        .check-toggle.checked { background: var(--green); border-color: var(--green); }
+        .check-toggle.checked::after { content: '\2713'; color: #fff; font-size: 12px; font-weight: 700; }
+
+        .owner { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; }
+        .owner-avatar { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: #fff; flex-shrink: 0; }
+        .owner-avatar.jp { background: #6366f1; }
+        .owner-avatar.sh { background: #22c55e; }
+        .owner-avatar.sm { background: #f59e0b; }
+        .owner-avatar.ha { background: var(--vermilion); }
+        .priority { font-size: 11px; font-weight: 700; }
+        .priority.critical { color: var(--red); }
+        .priority.high { color: #d97706; }
+        .priority.medium { color: var(--blue); }
+        .priority.low { color: var(--gray); }
+        .deliv-tag { background: var(--light-vermilion); color: var(--vermilion); padding: 1px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+
+        /* Dependency */
+        .dep-flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
+        .dep-flow:last-child { border-bottom: none; }
+        .dep-node { padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+        .dep-arrow { color: var(--text-sec); font-size: 18px; }
+
+        /* Risk */
+        .risk-row { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9; gap: 12px; }
+        .risk-row:last-child { border-bottom: none; }
+        .risk-severity { width: 8px; height: 32px; border-radius: 4px; flex-shrink: 0; }
+        .risk-severity.high { background: var(--red); }
+        .risk-severity.medium { background: var(--yellow); }
+        .risk-severity.low { background: var(--green); }
+        .risk-info { flex: 1; }
+        .risk-info .risk-name { font-size: 13px; font-weight: 600; }
+        .risk-info .risk-detail { font-size: 11px; color: var(--text-sec); }
+        .risk-badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+
+        /* Milestones */
+        .milestone-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid #f1f5f9; }
+        .milestone-row:last-child { border-bottom: none; }
+        .ms-date { width: 80px; font-size: 12px; font-weight: 700; color: var(--text-sec); flex-shrink: 0; }
+        .ms-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .ms-name { font-size: 13px; }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 4px; margin-bottom: var(--gap); background: var(--card); padding: 6px; border-radius: var(--radius); box-shadow: 0 1px 3px rgba(0,0,0,0.06); flex-wrap: wrap; }
+        .tab { padding: 10px 20px; border-radius: 8px; border: none; background: transparent; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--text-sec); transition: all 0.2s; }
+        .tab.active { background: var(--dark-blue); color: #fff; }
+        .tab:hover:not(.active) { background: #f1f5f9; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Progress bar for deliverables */
+        .prog-bar-wrap { display: flex; align-items: center; gap: 8px; }
+        .prog-bar-track { flex: 1; height: 6px; background: #e9ecef; border-radius: 3px; overflow: hidden; }
+        .prog-bar-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+        .prog-input { width: 45px; padding: 2px 4px; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 12px; text-align: center; }
+
+        .footer { text-align: center; padding: 24px; font-size: 12px; color: var(--text-sec); }
+        .footer strong { color: var(--dark-blue); }
+
+        /* Setup Modal */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: #fff; border-radius: 16px; padding: 40px; max-width: 520px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .modal h2 { font-size: 20px; margin-bottom: 8px; color: var(--dark-blue); }
+        .modal p { font-size: 14px; color: var(--text-sec); margin-bottom: 20px; line-height: 1.6; }
+        .modal label { font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px; color: var(--text); }
+        .modal input { width: 100%; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; margin-bottom: 16px; }
+        .modal input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+        .modal .btn { width: 100%; padding: 12px; font-size: 15px; margin-top: 8px; }
+        .modal .error-msg { color: var(--red); font-size: 13px; margin-bottom: 12px; display: none; }
+        .modal .help-text { font-size: 12px; color: var(--text-sec); margin-top: -12px; margin-bottom: 16px; }
+
+        /* Toast notifications */
+        .toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; border-radius: 8px; color: #fff; font-size: 13px; font-weight: 600; z-index: 1001; transform: translateY(80px); opacity: 0; transition: all 0.3s; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { background: var(--green); }
+        .toast.error { background: var(--red); }
+        .toast.info { background: var(--blue); }
+
+        @media print {
+            body { background: #fff; }
+            .container { max-width: none; }
+            .btn, .task-filters, .status-select, .check-toggle, .prog-input { display: none; }
+            .tabs { display: none; }
+            .tab-content { display: block !important; page-break-before: always; }
+        }
+        @media (max-width: 768px) {
+            .header { flex-direction: column; align-items: flex-start; }
+            .kpi-row { grid-template-columns: repeat(2, 1fr); }
+            .session-grid { grid-template-columns: 1fr; }
+            .phase-label { width: 120px; font-size: 11px; }
+            .phase-dates { width: 100px; font-size: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Setup Modal -->
+<div class="modal-overlay" id="setupModal">
+    <div class="modal">
+        <h2>Connect to GitHub</h2>
+        <p>This portal syncs all task and deliverable data through GitHub so your entire team sees the same status in real time. Enter the connection details below (one-time setup).</p>
+        <div class="error-msg" id="setupError"></div>
+        <label>Repository Owner (GitHub username or org)</label>
+        <input type="text" id="inputOwner" placeholder="e.g. bitsummit-io">
+        <label>Repository Name</label>
+        <input type="text" id="inputRepo" placeholder="e.g. slsmc-portal" value="slsmc-portal">
+        <label>Personal Access Token</label>
+        <input type="password" id="inputToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+        <div class="help-text">Fine-grained token with Contents read/write on this repo. Your PM will share this with you.</div>
+        <button class="btn btn-primary" onclick="connectGitHub()">Connect &amp; Sync</button>
+        <button class="btn" style="background:#f1f5f9;color:var(--text);margin-top:8px" onclick="useOffline()">Use Offline (localStorage only)</button>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<div class="container">
+    <div class="header">
+        <div>
+            <h1><span>BITSUMMIT</span> — SLSMC Project Portal</h1>
+            <div class="header-meta">BITPT 270 &bull; Domino to Exchange Online Migration &bull; Phase 1: Discovery &amp; Design</div>
+        </div>
+        <div class="header-right">
+            <div class="sync-indicator" id="syncIndicator">
+                <div class="sync-dot disconnected" id="syncDot"></div>
+                <span id="syncLabel">Offline</span>
+            </div>
+            <button class="btn btn-outline" onclick="syncFromGitHub()" title="Pull latest from GitHub">&#x21BB; Refresh</button>
+            <button class="btn btn-outline" onclick="exportStatus()">Export</button>
+            <button class="btn btn-green" onclick="saveAndSync()">Save &amp; Sync</button>
+            <button class="btn btn-outline" onclick="showSetup()" title="GitHub settings">&#x2699;</button>
+        </div>
+    </div>
+
+    <div class="kpi-row" id="kpiRow"></div>
+
+    <div class="tabs" id="tabBar"></div>
+
+    <div class="tab-content active" id="tab-overview">
+        <div class="section">
+            <div class="section-title">Project Phase Progress <span class="badge">LIVE</span></div>
+            <div id="phaseProgress"></div>
+        </div>
+        <div class="two-col">
+            <div class="section">
+                <div class="section-title">Task Completion by Week</div>
+                <div id="weeklyChart"></div>
+            </div>
+            <div class="section">
+                <div class="section-title">Deliverable Status</div>
+                <div id="delivChart"></div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title">Upcoming Milestones</div>
+            <div id="milestones"></div>
+        </div>
+    </div>
+
+    <div class="tab-content" id="tab-sessions">
+        <div class="session-grid" id="sessionGrid"></div>
+    </div>
+
+    <div class="tab-content" id="tab-tasks">
+        <div class="section">
+            <div class="section-title">Phase 1 Task Tracker <span class="badge" id="taskCount"></span></div>
+            <div class="task-filters" id="taskFilters"></div>
+            <div style="overflow-x:auto">
+            <table>
+                <thead><tr>
+                    <th style="width:30px"></th><th onclick="sortTasks('id')">ID</th><th onclick="sortTasks('task')">Task</th><th onclick="sortTasks('session')">Session</th><th onclick="sortTasks('owner')">Owner</th><th onclick="sortTasks('deliverable')">Deliv.</th><th onclick="sortTasks('target')">Target</th><th onclick="sortTasks('priority')">Priority</th><th onclick="sortTasks('status')">Status</th><th>Depends On</th>
+                </tr></thead>
+                <tbody id="taskBody"></tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-content" id="tab-deliverables">
+        <div class="section">
+            <div class="section-title">Phase 1 Deliverables</div>
+            <div style="overflow-x:auto">
+            <table>
+                <thead><tr><th>ID</th><th>Deliverable</th><th>Owner</th><th>Target Date</th><th>Gate Requirement</th><th>Progress</th><th>Status</th></tr></thead>
+                <tbody id="delivBody"></tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-content" id="tab-risks">
+        <div class="two-col">
+            <div class="section"><div class="section-title">Key Dependencies</div><div id="depList"></div></div>
+            <div class="section"><div class="section-title">Risk Register</div><div id="riskList"></div></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <strong>BITSUMMIT</strong> — BITPT 270 SLSMC Project Portal — Synced via GitHub &bull; Last saved: <span id="lastSaved">Never</span>
+    </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// ALL DATA (defaults)
+// ═══════════════════════════════════════
+var PHASES = [
+    { id:'P0', name:'Phase 0: Kickoff', dates:'Mar 16', color:'p0', pct:100 },
+    { id:'P1', name:'Phase 1: Discovery & Design', dates:'Mar 18 \u2013 Apr 10', color:'p1', pct:0 },
+    { id:'P2', name:'Phase 2: Pilot Migration', dates:'Apr 14 \u2013 May 2', color:'p2', pct:0 },
+    { id:'P3', name:'Phase 3: Production Waves', dates:'May 5 \u2013 Oct 31', color:'p3', pct:0 },
+    { id:'P4', name:'Phase 4: Hypercare & Closeout', dates:'Nov 1 \u2013 Dec 12', color:'p4', pct:0 }
+];
+
+var SESSIONS = [
+    { id:'S1', name:'Environment Discovery & Access Validation', date:'Mar 18', dur:'2.5 hrs', delivs:['D1','D2'], color:'s1', obj:['Confirm remote access model with Pascal','Live Domino environment discovery demo','Collect data for Tenant Readiness & Identity Analyzer','Validate SOW assumptions (servers, mailboxes, sites)','Establish working rhythm and sprint cadence'] },
+    { id:'S2', name:'Identity Deep-Dive & AD Remediation', date:'Mar 20', dur:'2 hrs', delivs:['D2','D5'], color:'s2', obj:['Present IdFix scan results (categorized by severity)','Walk through Domino-to-AD identity cross-reference','Agree on AD remediation plan and execution model','Collect mailbox-level data for Migration Workbook','Validate Entra Connect configuration'] },
+    { id:'S3', name:'M365 Tenant Posture & Security Baseline', date:'Mar 25', dur:'2 hrs', delivs:['D1','D3'], color:'s3', obj:['Present Tenant Readiness Snapshot (D1) for sign-off','Confirm IdFix remediation progress (before/after)','Capture security and compliance baseline','Design Conditional Access policies (report-only)','Document and attest data residency (Canadian DCs)'] },
+    { id:'S4', name:'Migration Architecture & Tool Selection', date:'Mar 27\u201328', dur:'2.5 hrs', delivs:['D3','D4'], color:'s4', obj:['Present final Identity Analyzer Report (D2)','Present Security/Compliance Radar (D3)','Migration tool evaluation: BitTitan vs Quest','End-to-end migration architecture walkthrough','Define pilot migration criteria and user profiles'] },
+    { id:'S5', name:'Migration Workbook & Wave Planning', date:'Apr 1', dur:'2 hrs', delivs:['D4','D5'], color:'s5', obj:['Finalize Migration Architecture Document (D4)','Present Migration Workbook with wave assignments','Client review of wave composition by site','Define weekend cutover execution model','Confirm pilot user list and pilot execution date'] },
+    { id:'S6', name:'Blueprint Pack Review & Sign-off', date:'Apr 7\u20138', dur:'2.5 hrs', delivs:['D6','BP'], color:'s6', obj:['Present Risk Register & Wave Readiness (D6)','Walk through complete Blueprint Pack','Client Q&A and concern resolution','Phase 2 readiness review','Target formal sign-off by April 9\u201310'] }
+];
+
+var DELIVERABLES = [
+    { id:'D1', name:'Tenant Readiness Snapshot', owner:'Sachin', oc:'sh', target:'Mar 23\u201325', gate:'Domains verified, DNS baselined, licensing confirmed', progress:0, status:'not-started' },
+    { id:'D2', name:'Directory Identity Analyzer Report', owner:'Jerald', oc:'jp', target:'Mar 23\u201327', gate:'Zero IdFix critical errors = Phase 2 gate', progress:0, status:'not-started' },
+    { id:'D3', name:'Security & Compliance Radar', owner:'Sachin + Jerald', oc:'sh', target:'Mar 30 \u2013 Apr 2', gate:'CA policies defined, data residency attested', progress:0, status:'not-started' },
+    { id:'D4', name:'Migration Architecture Document', owner:'Jerald', oc:'jp', target:'Mar 30 \u2013 Apr 3', gate:'Tool selected, connector design, coexistence plan', progress:0, status:'not-started' },
+    { id:'D5', name:'Migration Workbook', owner:'Jerald + Sachin', oc:'jp', target:'Apr 1\u20133', gate:'Wave assignments, size distribution, pilot list', progress:0, status:'not-started' },
+    { id:'D6', name:'Risk Register & Wave Readiness', owner:'Sushma', oc:'sm', target:'Apr 6\u20138', gate:'Go/no-go criteria defined per phase', progress:0, status:'not-started' },
+    { id:'BP', name:'Blueprint Pack Sign-off (GATE)', owner:'All parties', oc:'ha', target:'Apr 9\u201310', gate:'Client must sign before Phase 2', progress:0, status:'not-started' }
+];
+
+var TASKS = [
+    {id:'T01',task:'Validate remote access connectivity (VPN/RDP/Teams)',session:'S1',owner:'Jerald',oc:'jp',deliv:'D1',target:'Mar 18',pri:'critical',status:'not-started',dep:[],chk:false},
+    {id:'T02',task:'Domino server topology discovery (all 5 servers)',session:'S1',owner:'Jerald',oc:'jp',deliv:'D2',target:'Mar 18',pri:'critical',status:'not-started',dep:['T01'],chk:false},
+    {id:'T03',task:'Mail routing topology mapping (Connection docs)',session:'S1',owner:'Jerald',oc:'jp',deliv:'D2',target:'Mar 18',pri:'high',status:'not-started',dep:['T01'],chk:false},
+    {id:'T04',task:'Domino catalog scan \u2014 confirm no custom apps',session:'S1',owner:'Sachin',oc:'sh',deliv:'D2',target:'Mar 18',pri:'high',status:'not-started',dep:['T01'],chk:false},
+    {id:'T05',task:'Mailbox inventory: count, types, size distribution',session:'S1',owner:'Jerald',oc:'jp',deliv:'D5',target:'Mar 18',pri:'critical',status:'not-started',dep:['T01'],chk:false},
+    {id:'T06',task:'AD forest/domain structure & UPN suffix capture',session:'S1',owner:'Jerald',oc:'jp',deliv:'D2',target:'Mar 18',pri:'critical',status:'not-started',dep:['T01'],chk:false},
+    {id:'T07',task:'M365 tenant initial posture (region, domains, licenses)',session:'S1',owner:'Sachin',oc:'sh',deliv:'D1',target:'Mar 18',pri:'critical',status:'not-started',dep:['T01'],chk:false},
+    {id:'T08',task:'DNS baseline: MX, SPF, DKIM, DMARC records',session:'S1',owner:'Sachin',oc:'sh',deliv:'D1',target:'Mar 18',pri:'high',status:'not-started',dep:[],chk:false},
+    {id:'T09',task:'Shared mailbox & delegation patterns inventory',session:'S1',owner:'Jerald',oc:'jp',deliv:'D5',target:'Mar 18',pri:'high',status:'not-started',dep:['T01'],chk:false},
+    {id:'T10',task:'Distribution list inventory and membership counts',session:'S1',owner:'Jerald',oc:'jp',deliv:'D5',target:'Mar 18',pri:'medium',status:'not-started',dep:['T01'],chk:false},
+    {id:'T11',task:'Run initial IdFix scan on AD',session:'S1\u2192S2',owner:'Jerald',oc:'jp',deliv:'D2',target:'Mar 19',pri:'critical',status:'not-started',dep:['T06'],chk:false},
+    {id:'T12',task:'Begin Tenant Readiness Snapshot documentation',session:'S1\u2192S2',owner:'Sachin',oc:'sh',deliv:'D1',target:'Mar 19',pri:'high',status:'not-started',dep:['T07','T08'],chk:false},
+    {id:'T13',task:'Send Session 1 summary email to SLSMC & CDW',session:'S1\u2192S2',owner:'Sushma',oc:'sm',deliv:'-',target:'Mar 19',pri:'high',status:'not-started',dep:[],chk:false},
+    {id:'T14',task:'Present IdFix results (categorized by severity)',session:'S2',owner:'Jerald',oc:'jp',deliv:'D2',target:'Mar 20',pri:'critical',status:'not-started',dep:['T11'],chk:false},
+    {id:'T15',task:'Domino-to-AD identity cross-reference presentation',session:'S2',owner:'Jerald',oc:'jp',deliv:'D2',target:'Mar 20',pri:'critical',status:'not-started',dep:['T11'],chk:false},
+    {id:'T16',task:'Agree AD remediation plan (who, when, change control)',session:'S2',owner:'Jerald',oc:'jp',deliv:'D2',target:'Mar 20',pri:'critical',status:'not-started',dep:['T14'],chk:false},
+    {id:'T17',task:'Entra Connect assessment (deployed or to-deploy)',session:'S2',owner:'Sachin',oc:'sh',deliv:'D3',target:'Mar 20',pri:'high',status:'not-started',dep:['T07'],chk:false},
+    {id:'T18',task:'Mailbox data deep-dive: sizes, categories, wave candidates',session:'S2',owner:'Jerald',oc:'jp',deliv:'D5',target:'Mar 20',pri:'high',status:'not-started',dep:['T05'],chk:false},
+    {id:'T19',task:'Execute AD remediation scripts (supervised by Pascal)',session:'S2\u2192S3',owner:'Jerald',oc:'jp',deliv:'D2',target:'Mar 21\u201324',pri:'critical',status:'not-started',dep:['T16'],chk:false},
+    {id:'T20',task:'Re-run IdFix scan \u2014 validate remediation results',session:'S2\u2192S3',owner:'Jerald',oc:'jp',deliv:'D2',target:'Mar 24',pri:'critical',status:'not-started',dep:['T19'],chk:false},
+    {id:'T21',task:'Continue Tenant Readiness Snapshot documentation',session:'S2\u2192S3',owner:'Sachin',oc:'sh',deliv:'D1',target:'Mar 21\u201324',pri:'high',status:'not-started',dep:['T12'],chk:false},
+    {id:'T22',task:'Present Tenant Readiness Snapshot (D1) for sign-off',session:'S3',owner:'Sachin',oc:'sh',deliv:'D1',target:'Mar 25',pri:'critical',status:'not-started',dep:['T21'],chk:false},
+    {id:'T23',task:'Present IdFix remediation progress (before/after)',session:'S3',owner:'Jerald',oc:'jp',deliv:'D2',target:'Mar 25',pri:'high',status:'not-started',dep:['T20'],chk:false},
+    {id:'T24',task:'Security baseline capture (MFA, CA policies, device mgmt)',session:'S3',owner:'Sachin',oc:'sh',deliv:'D3',target:'Mar 25',pri:'critical',status:'not-started',dep:['T07'],chk:false},
+    {id:'T25',task:'Design Conditional Access policies (report-only mode)',session:'S3',owner:'Sachin',oc:'sh',deliv:'D3',target:'Mar 25',pri:'high',status:'not-started',dep:['T24'],chk:false},
+    {id:'T26',task:'Data residency attestation (M365 Admin > Data Location)',session:'S3',owner:'Sachin',oc:'sh',deliv:'D3',target:'Mar 25',pri:'critical',status:'not-started',dep:['T07'],chk:false},
+    {id:'T27',task:'Exchange Online coexistence connector planning',session:'S3',owner:'Sachin',oc:'sh',deliv:'D4',target:'Mar 25',pri:'medium',status:'not-started',dep:['T22'],chk:false},
+    {id:'T28',task:'Finalize Tenant Readiness Snapshot & send for sign-off',session:'S3\u2192S4',owner:'Sachin',oc:'sh',deliv:'D1',target:'Mar 26',pri:'critical',status:'not-started',dep:['T22'],chk:false},
+    {id:'T29',task:'Run final IdFix validation (target: zero critical errors)',session:'S3\u2192S4',owner:'Jerald',oc:'jp',deliv:'D2',target:'Mar 27',pri:'critical',status:'not-started',dep:['T19','T20'],chk:false},
+    {id:'T30',task:'Begin Security/Compliance Radar document draft',session:'S3\u2192S4',owner:'Sachin',oc:'sh',deliv:'D3',target:'Mar 26\u201327',pri:'high',status:'not-started',dep:['T24','T25','T26'],chk:false},
+    {id:'T31',task:'Migration tool evaluation research (BitTitan vs Quest)',session:'S3\u2192S4',owner:'Jerald',oc:'jp',deliv:'D4',target:'Mar 26\u201327',pri:'high',status:'not-started',dep:[],chk:false},
+    {id:'T32',task:'Present Identity Analyzer Report (D2) \u2014 sign-off',session:'S4',owner:'Jerald',oc:'jp',deliv:'D2',target:'Mar 27',pri:'critical',status:'not-started',dep:['T29'],chk:false},
+    {id:'T33',task:'Present Security/Compliance Radar (D3)',session:'S4',owner:'Sachin',oc:'sh',deliv:'D3',target:'Mar 27',pri:'critical',status:'not-started',dep:['T30'],chk:false},
+    {id:'T34',task:'Migration tool comparison matrix presentation',session:'S4',owner:'Jerald',oc:'jp',deliv:'D4',target:'Mar 27\u201328',pri:'critical',status:'not-started',dep:['T31'],chk:false},
+    {id:'T35',task:'End-to-end migration architecture walkthrough',session:'S4',owner:'Jerald',oc:'jp',deliv:'D4',target:'Mar 27\u201328',pri:'critical',status:'not-started',dep:['T34'],chk:false},
+    {id:'T36',task:'Define pilot user criteria and complexity profiles',session:'S4',owner:'Sachin',oc:'sh',deliv:'D5',target:'Mar 28',pri:'high',status:'not-started',dep:['T18'],chk:false},
+    {id:'T37',task:'Write Migration Architecture Document (D4)',session:'S4\u2192S5',owner:'Jerald',oc:'jp',deliv:'D4',target:'Mar 30\u201331',pri:'critical',status:'not-started',dep:['T35'],chk:false},
+    {id:'T38',task:'Finalize D3 with client feedback',session:'S4\u2192S5',owner:'Sachin',oc:'sh',deliv:'D3',target:'Mar 30',pri:'high',status:'not-started',dep:['T33'],chk:false},
+    {id:'T39',task:'Draft Migration Workbook with wave assignments',session:'S4\u2192S5',owner:'Jerald',oc:'jp',deliv:'D5',target:'Mar 30\u201331',pri:'high',status:'not-started',dep:['T18','T36'],chk:false},
+    {id:'T40',task:'Present Migration Architecture Document (D4) \u2014 sign-off',session:'S5',owner:'Jerald',oc:'jp',deliv:'D4',target:'Apr 1',pri:'critical',status:'not-started',dep:['T37'],chk:false},
+    {id:'T41',task:'Present Migration Workbook with wave assignments',session:'S5',owner:'Jerald',oc:'jp',deliv:'D5',target:'Apr 1',pri:'critical',status:'not-started',dep:['T39'],chk:false},
+    {id:'T42',task:'Wave composition review with client (by site/complexity)',session:'S5',owner:'All',oc:'ha',deliv:'D5',target:'Apr 1',pri:'critical',status:'not-started',dep:['T41'],chk:false},
+    {id:'T43',task:'Weekend cutover execution model definition',session:'S5',owner:'Jerald',oc:'jp',deliv:'D5',target:'Apr 1',pri:'high',status:'not-started',dep:['T40'],chk:false},
+    {id:'T44',task:'Confirm pilot user list by name with SLSMC',session:'S5',owner:'Sachin',oc:'sh',deliv:'D5',target:'Apr 1',pri:'high',status:'not-started',dep:['T36'],chk:false},
+    {id:'T45',task:'Finalize Migration Workbook (D5) with client feedback',session:'S5\u2192S6',owner:'Jerald',oc:'jp',deliv:'D5',target:'Apr 2\u20133',pri:'critical',status:'not-started',dep:['T42'],chk:false},
+    {id:'T46',task:'Draft Risk Register (D6) incorporating all sessions',session:'S5\u2192S6',owner:'Sushma',oc:'sm',deliv:'D6',target:'Apr 3\u20137',pri:'critical',status:'not-started',dep:[],chk:false},
+    {id:'T47',task:'Compile Blueprint Pack (all deliverables D1\u2013D6)',session:'S5\u2192S6',owner:'Sushma',oc:'sm',deliv:'BP',target:'Apr 5\u20137',pri:'critical',status:'not-started',dep:['T28','T32','T38','T40','T45','T46'],chk:false},
+    {id:'T48',task:'Present Risk Register (D6) and wave readiness criteria',session:'S6',owner:'Sushma',oc:'sm',deliv:'D6',target:'Apr 7',pri:'critical',status:'not-started',dep:['T46'],chk:false},
+    {id:'T49',task:'Blueprint Pack executive walkthrough (all deliverables)',session:'S6',owner:'Jerald',oc:'jp',deliv:'BP',target:'Apr 7\u20138',pri:'critical',status:'not-started',dep:['T47'],chk:false},
+    {id:'T50',task:'Client Q&A and concern resolution',session:'S6',owner:'All',oc:'ha',deliv:'BP',target:'Apr 7\u20138',pri:'critical',status:'not-started',dep:['T49'],chk:false},
+    {id:'T51',task:'Phase 2 readiness review (prerequisites confirmed)',session:'S6',owner:'Sachin',oc:'sh',deliv:'BP',target:'Apr 8',pri:'high',status:'not-started',dep:['T40','T44'],chk:false},
+    {id:'T52',task:'Blueprint Pack formal sign-off (PHASE GATE)',session:'S6\u2192',owner:'All parties',oc:'ha',deliv:'BP',target:'Apr 9\u201310',pri:'critical',status:'not-started',dep:['T50'],chk:false}
+];
+
+var RISKS = [
+    {name:'Identity sync conflicts',detail:'UPNs with @slsmc.local; duplicate proxyAddresses',sev:'high',st:'Monitoring'},
+    {name:'Access model friction',detail:'Slow screen-sharing; Pascal availability',sev:'high',st:'Monitoring'},
+    {name:'Data residency non-compliance',detail:'M365 tenant not in Canadian DC',sev:'high',st:'To validate'},
+    {name:'Undiscovered Domino apps',detail:'Custom .nsf beyond mail/calendar/contacts',sev:'medium',st:'To validate'},
+    {name:'Shared mailbox complexity',detail:'More shared mailboxes than estimated',sev:'medium',st:'Monitoring'},
+    {name:'Large mailbox concentration',detail:'>20 mailboxes over 25 GB',sev:'medium',st:'To validate'},
+    {name:'Entra Connect conflicts',detail:'Existing config with wrong sync scope',sev:'medium',st:'To validate'},
+    {name:'Licensing gaps',detail:'Insufficient EXO licenses or wrong plan tier',sev:'low',st:'To validate'}
+];
+
+var DEPS = [
+    {from:'Remote Access (T01)',to:'All Discovery Tasks',c:'#ef4444'},
+    {from:'IdFix Scan (T11)',to:'Remediation (T19)',c:'#6366f1'},
+    {from:'Remediation (T19)',to:'D2 Sign-off (T32)',c:'#6366f1'},
+    {from:'Tenant Posture (T07)',to:'D1 Snapshot (T22)',c:'#3b82f6'},
+    {from:'Security Baseline (T24)',to:'D3 Radar (T33)',c:'#8b5cf6'},
+    {from:'Tool Selection (T34)',to:'Architecture Doc (T37)',c:'#f59e0b'},
+    {from:'Wave Planning (T42)',to:'Workbook D5 (T45)',c:'#22c55e'},
+    {from:'All Deliverables (D1\u2013D6)',to:'Blueprint Pack (T47)',c:'#F12300'},
+    {from:'Blueprint Sign-off (T52)',to:'Phase 2 Start',c:'#F12300'}
+];
+
+var MILESTONES = [
+    {date:'Mar 18',name:'First Discovery Session'},
+    {date:'Mar 25',name:'D1 Tenant Readiness Snapshot presented'},
+    {date:'Mar 27',name:'D2 Identity Analyzer \u2014 zero critical errors'},
+    {date:'Apr 2',name:'D3 Security/Compliance Radar complete'},
+    {date:'Apr 3',name:'D4 Migration Architecture agreed'},
+    {date:'Apr 3',name:'D5 Migration Workbook with wave assignments'},
+    {date:'Apr 8',name:'D6 Risk Register finalized'},
+    {date:'Apr 9\u201310',name:'BLUEPRINT PACK SIGN-OFF (GATE)'}
+];
+
+// ═══════════════════════════════════════
+// GITHUB SYNC ENGINE
+// ═══════════════════════════════════════
+var ghConfig = null;
+var ghFileSHA = null; // needed for GitHub API updates
+var syncMode = 'offline'; // 'github' or 'offline'
+
+function getGHConfig() {
+    try {
+        var c = JSON.parse(localStorage.getItem('slsmc_gh_config') || 'null');
+        return c;
+    } catch(e) { return null; }
+}
+
+function saveGHConfig(owner, repo, token) {
+    var c = { owner: owner, repo: repo, token: token };
+    localStorage.setItem('slsmc_gh_config', JSON.stringify(c));
+    ghConfig = c;
+}
+
+function showSetup() {
+    var modal = document.getElementById('setupModal');
+    modal.classList.add('active');
+    if (ghConfig) {
+        document.getElementById('inputOwner').value = ghConfig.owner || '';
+        document.getElementById('inputRepo').value = ghConfig.repo || '';
+        document.getElementById('inputToken').value = ghConfig.token || '';
+    }
+}
+
+function hideSetup() {
+    document.getElementById('setupModal').classList.remove('active');
+}
+
+function useOffline() {
+    syncMode = 'offline';
+    hideSetup();
+    loadLocalState();
+    renderAll();
+    updateSyncUI();
+    showToast('Working offline. Data saved to this browser only.', 'info');
+}
+
+function connectGitHub() {
+    var owner = document.getElementById('inputOwner').value.trim();
+    var repo = document.getElementById('inputRepo').value.trim();
+    var token = document.getElementById('inputToken').value.trim();
+    var errEl = document.getElementById('setupError');
+
+    if (!owner || !repo || !token) {
+        errEl.textContent = 'All fields are required.';
+        errEl.style.display = 'block';
+        return;
+    }
+    if (token.length < 10) {
+        errEl.textContent = 'Token looks too short. Use a GitHub Personal Access Token (starts with ghp_).';
+        errEl.style.display = 'block';
+        return;
+    }
+
+    errEl.style.display = 'none';
+    saveGHConfig(owner, repo, token);
+
+    // Test connection by fetching state.json
+    setSyncStatus('syncing', 'Connecting...');
+    fetchGitHubState(function(ok) {
+        if (ok) {
+            syncMode = 'github';
+            hideSetup();
+            renderAll();
+            updateSyncUI();
+            showToast('Connected to GitHub! All changes will sync.', 'success');
+        } else {
+            errEl.textContent = 'Could not connect. Check owner/repo/token. Make sure the repo exists and the token has Contents read/write permission.';
+            errEl.style.display = 'block';
+            setSyncStatus('disconnected', 'Connection failed');
+        }
+    });
+}
+
+function setSyncStatus(status, label) {
+    var dot = document.getElementById('syncDot');
+    var lbl = document.getElementById('syncLabel');
+    dot.className = 'sync-dot ' + status;
+    lbl.textContent = label;
+}
+
+function updateSyncUI() {
+    if (syncMode === 'github') {
+        setSyncStatus('connected', 'Synced via GitHub');
+    } else {
+        setSyncStatus('disconnected', 'Offline (local only)');
+    }
+}
+
+function showToast(msg, type) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + (type || 'info') + ' show';
+    setTimeout(function() { t.classList.remove('show'); }, 3000);
+}
+
+// Fetch state.json from GitHub
+function fetchGitHubState(callback) {
+    if (!ghConfig) { if(callback) callback(false); return; }
+    var url = 'https://api.github.com/repos/' + ghConfig.owner + '/' + ghConfig.repo + '/contents/data/state.json';
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + ghConfig.token);
+    xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState !== 4) return;
+        if (xhr.status === 200) {
+            try {
+                var resp = JSON.parse(xhr.responseText);
+                ghFileSHA = resp.sha;
+                var content = atob(resp.content.replace(/\n/g, ''));
+                var data = JSON.parse(content);
+                applyRemoteState(data);
+                if (callback) callback(true);
+            } catch(e) {
+                console.error('Parse error:', e);
+                if (callback) callback(false);
+            }
+        } else if (xhr.status === 404) {
+            // File doesn't exist yet — create it
+            ghFileSHA = null;
+            pushStateToGitHub(function(ok) {
+                if (callback) callback(ok);
+            });
+        } else {
+            console.error('GitHub API error:', xhr.status, xhr.responseText);
+            if (callback) callback(false);
+        }
+    };
+    xhr.send();
+}
+
+// Push state.json to GitHub
+function pushStateToGitHub(callback) {
+    if (!ghConfig) { if(callback) callback(false); return; }
+    setSyncStatus('syncing', 'Saving...');
+
+    var data = buildStatePayload();
+    var content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+    var url = 'https://api.github.com/repos/' + ghConfig.owner + '/' + ghConfig.repo + '/contents/data/state.json';
+
+    var body = {
+        message: 'Portal update: ' + new Date().toISOString().slice(0, 16).replace('T', ' '),
+        content: content
+    };
+    if (ghFileSHA) {
+        body.sha = ghFileSHA;
+    }
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('PUT', url, true);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + ghConfig.token);
+    xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState !== 4) return;
+        if (xhr.status === 200 || xhr.status === 201) {
+            try {
+                var resp = JSON.parse(xhr.responseText);
+                ghFileSHA = resp.content.sha;
+                document.getElementById('lastSaved').textContent = new Date().toLocaleString();
+                setSyncStatus('connected', 'Synced via GitHub');
+                if (callback) callback(true);
+            } catch(e) {
+                setSyncStatus('disconnected', 'Parse error');
+                if (callback) callback(false);
+            }
+        } else if (xhr.status === 409) {
+            // Conflict — someone else saved. Refetch and merge.
+            showToast('Conflict detected. Pulling latest changes...', 'info');
+            fetchGitHubState(function(ok) {
+                setSyncStatus(ok ? 'connected' : 'disconnected', ok ? 'Synced (merged)' : 'Conflict');
+                if (ok) renderAll();
+                if (callback) callback(ok);
+            });
+        } else {
+            console.error('GitHub push error:', xhr.status, xhr.responseText);
+            setSyncStatus('disconnected', 'Save failed');
+            showToast('Failed to save to GitHub. Check connection.', 'error');
+            if (callback) callback(false);
+        }
+    };
+    xhr.send(JSON.stringify(body));
+}
+
+function buildStatePayload() {
+    return {
+        tasks: state.tasks.map(function(t) { return { id: t.id, status: t.status, chk: t.chk }; }),
+        deliverables: state.deliverables.map(function(d) { return { id: d.id, status: d.status, progress: d.progress }; }),
+        savedAt: new Date().toISOString(),
+        savedBy: 'portal'
+    };
+}
+
+function applyRemoteState(data) {
+    if (data.tasks) {
+        data.tasks.forEach(function(st) {
+            var t = state.tasks.find(function(x) { return x.id === st.id; });
+            if (t) { t.status = st.status; t.chk = st.chk; }
+        });
+    }
+    if (data.deliverables) {
+        data.deliverables.forEach(function(sd) {
+            var d = state.deliverables.find(function(x) { return x.id === sd.id; });
+            if (d) { d.status = sd.status; d.progress = sd.progress; }
+        });
+    }
+    if (data.savedAt) {
+        document.getElementById('lastSaved').textContent = new Date(data.savedAt).toLocaleString();
+    }
+    // Also cache locally
+    saveLocalState();
+}
+
+function syncFromGitHub() {
+    if (syncMode !== 'github') {
+        showToast('Not connected to GitHub. Click the gear icon to set up.', 'info');
+        return;
+    }
+    setSyncStatus('syncing', 'Refreshing...');
+    fetchGitHubState(function(ok) {
+        if (ok) {
+            renderAll();
+            showToast('Refreshed from GitHub.', 'success');
+            setSyncStatus('connected', 'Synced via GitHub');
+        } else {
+            showToast('Failed to refresh. Check connection.', 'error');
+            setSyncStatus('disconnected', 'Refresh failed');
+        }
+    });
+}
+
+function saveAndSync() {
+    // Always save locally
+    saveLocalState();
+
+    if (syncMode === 'github') {
+        pushStateToGitHub(function(ok) {
+            if (ok) {
+                showToast('Saved and synced to GitHub!', 'success');
+            }
+        });
+    } else {
+        document.getElementById('lastSaved').textContent = new Date().toLocaleString();
+        showToast('Saved locally. Connect to GitHub to share with team.', 'info');
+    }
+}
+
+// ═══════════════════════════════════════
+// LOCAL STATE (fallback/cache)
+// ═══════════════════════════════════════
+var state = { tasks: JSON.parse(JSON.stringify(TASKS)), deliverables: JSON.parse(JSON.stringify(DELIVERABLES)) };
+var taskFilter = 'all';
+var taskSortCol = 'id', taskSortDir = 'asc';
+
+function loadLocalState() {
+    try {
+        var s = JSON.parse(localStorage.getItem('slsmc_portal_v3') || 'null');
+        if (s) {
+            if (s.tasks) s.tasks.forEach(function(st) { var t = state.tasks.find(function(x){return x.id===st.id}); if(t){t.status=st.status;t.chk=st.chk;} });
+            if (s.deliverables) s.deliverables.forEach(function(sd) { var d = state.deliverables.find(function(x){return x.id===sd.id}); if(d){d.status=sd.status;d.progress=sd.progress;} });
+            if (s.savedAt) document.getElementById('lastSaved').textContent = new Date(s.savedAt).toLocaleString();
+        }
+    } catch(e) {}
+}
+
+function saveLocalState() {
+    var data = buildStatePayload();
+    try { localStorage.setItem('slsmc_portal_v3', JSON.stringify(data)); } catch(e){}
+}
+
+function exportStatus() {
+    var lines = ['BITPT 270 \u2014 SLSMC Phase 1 Status Export', 'Date: ' + new Date().toLocaleString(), ''];
+    lines.push('=== DELIVERABLES ===');
+    state.deliverables.forEach(function(d){lines.push(d.id+' | '+d.name+' | '+d.progress+'% | '+d.status)});
+    lines.push('','=== TASKS ===');
+    state.tasks.forEach(function(t){lines.push(t.id+' | '+t.task+' | '+t.owner+' | '+t.status+(t.chk?' | DONE':''))});
+    var blob = new Blob([lines.join('\n')], {type:'text/plain'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'SLSMC_Status_'+new Date().toISOString().slice(0,10)+'.txt';
+    a.click();
+}
+
+// ═══════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════
+var tabs = ['overview','sessions','tasks','deliverables','risks'];
+var tabLabels = ['Overview','Working Sessions','Task Tracker','Deliverables','Risks & Dependencies'];
+
+function renderTabs() {
+    document.getElementById('tabBar').innerHTML = tabs.map(function(t,i){
+        return '<button class="tab'+(i===0?' active':'')+'" onclick="switchTab(\''+t+'\',this)">'+tabLabels[i]+'</button>';
+    }).join('');
+}
+
+function switchTab(name, el) {
+    document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});
+    document.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active')});
+    document.getElementById('tab-'+name).classList.add('active');
+    if(el) el.classList.add('active');
+}
+
+// ═══════════════════════════════════════
+// RENDER FUNCTIONS
+// ═══════════════════════════════════════
+function countByStatus(arr, s) { return arr.filter(function(x){return x.status===s}).length; }
+
+function renderKPIs() {
+    var total = state.tasks.length;
+    var done = countByStatus(state.tasks,'completed');
+    var prog = countByStatus(state.tasks,'in-progress');
+    var blocked = countByStatus(state.tasks,'blocked');
+    var dDone = countByStatus(state.deliverables,'completed');
+    var pct = total>0?Math.round(done/total*100):0;
+    document.getElementById('kpiRow').innerHTML =
+        '<div class="kpi blue"><div class="kpi-label">Total Tasks</div><div class="kpi-value">'+total+'</div><div class="kpi-sub">Across 6 working sessions</div></div>' +
+        '<div class="kpi green"><div class="kpi-label">Completed</div><div class="kpi-value">'+done+'</div><div class="kpi-sub">'+pct+'% of all tasks</div></div>' +
+        '<div class="kpi yellow"><div class="kpi-label">In Progress</div><div class="kpi-value">'+prog+'</div><div class="kpi-sub">'+(blocked>0?blocked+' blocked':'No blockers')+'</div></div>' +
+        '<div class="kpi red"><div class="kpi-label">Deliverables Signed Off</div><div class="kpi-value">'+dDone+' / '+state.deliverables.length+'</div><div class="kpi-sub">Blueprint Pack gate: Apr 9\u201310</div></div>';
+}
+
+function renderPhases() {
+    var done = countByStatus(state.tasks,'completed');
+    PHASES[1].pct = Math.round(done/state.tasks.length*100);
+    document.getElementById('phaseProgress').innerHTML = PHASES.map(function(p){
+        return '<div class="phase-row"><div class="phase-label">'+p.name+'<small>'+p.id+'</small></div><div class="phase-bar-wrap"><div class="phase-bar '+p.color+'" style="width:'+Math.max(p.pct,3)+'%">'+p.pct+'%</div></div><div class="phase-dates">'+p.dates+'</div></div>';
+    }).join('');
+}
+
+function getWeekTasks(sessionPrefixes) {
+    return state.tasks.filter(function(t) {
+        return sessionPrefixes.some(function(s) { return t.session === s || t.session.indexOf(s + '\u2192') === 0; });
+    });
+}
+
+function renderWeeklyChart() {
+    var weeks = [
+        { label: 'Week 1<br>Mar 18\u201322', tasks: getWeekTasks(['S1']) },
+        { label: 'Week 2<br>Mar 23\u201329', tasks: getWeekTasks(['S2','S3']) },
+        { label: 'Week 3<br>Mar 30\u2013Apr 5', tasks: getWeekTasks(['S4','S5']) },
+        { label: 'Week 4<br>Apr 6\u201310', tasks: getWeekTasks(['S6']) }
+    ];
+    var maxT = Math.max.apply(null, weeks.map(function(w){return w.tasks.length})) || 1;
+
+    var html = '<div class="css-chart">';
+    weeks.forEach(function(w) {
+        var done = w.tasks.filter(function(t){return t.status==='completed'}).length;
+        var prog = w.tasks.filter(function(t){return t.status==='in-progress'}).length;
+        var rest = w.tasks.length - done - prog;
+        html += '<div class="css-bar-group" style="flex:1">';
+        html += '<div class="css-bar" style="width:18px;height:'+Math.max(done/maxT*180,2)+'px;background:var(--green)" title="Completed: '+done+'"><div class="css-bar-val" style="color:var(--green)">'+done+'</div></div>';
+        html += '<div class="css-bar" style="width:18px;height:'+Math.max(prog/maxT*180,2)+'px;background:var(--blue)" title="In Progress: '+prog+'"><div class="css-bar-val" style="color:var(--blue)">'+prog+'</div></div>';
+        html += '<div class="css-bar" style="width:18px;height:'+Math.max(rest/maxT*180,2)+'px;background:#e2e8f0" title="Remaining: '+rest+'"><div class="css-bar-val" style="color:var(--gray)">'+rest+'</div></div>';
+        html += '</div>';
+    });
+    html += '</div>';
+    html += '<div style="display:flex;justify-content:space-around">' + weeks.map(function(w){return '<div class="css-bar-label">'+w.label+'</div>'}).join('') + '</div>';
+    html += '<div class="chart-legend"><div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Completed</div><div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>In Progress</div><div class="legend-item"><div class="legend-dot" style="background:#e2e8f0"></div>Remaining</div></div>';
+    document.getElementById('weeklyChart').innerHTML = html;
+}
+
+function renderDelivChart() {
+    var counts = {ns: countByStatus(state.deliverables,'not-started'), ip: countByStatus(state.deliverables,'in-progress'), done: countByStatus(state.deliverables,'completed'), bl: countByStatus(state.deliverables,'blocked')};
+    var total = state.deliverables.length;
+    var pNs = counts.ns/total*100, pIp = counts.ip/total*100, pDone = counts.done/total*100, pBl = counts.bl/total*100;
+    var g = 'conic-gradient(#e2e8f0 0% '+pNs+'%, var(--blue) '+pNs+'% '+(pNs+pIp)+'%, var(--green) '+(pNs+pIp)+'% '+(pNs+pIp+pDone)+'%, var(--red) '+(pNs+pIp+pDone)+'% 100%)';
+
+    document.getElementById('delivChart').innerHTML =
+        '<div class="donut-wrap">' +
+            '<div class="donut" style="background:'+g+'">' +
+                '<div class="donut-hole"><div class="big">'+counts.done+'</div><div class="small">of '+total+' done</div></div>' +
+            '</div>' +
+            '<div class="donut-legend">' +
+                '<div class="donut-legend-row"><div class="donut-legend-dot" style="background:#e2e8f0"></div><span class="donut-legend-label">Not Started</span><span class="donut-legend-val">'+counts.ns+'</span></div>' +
+                '<div class="donut-legend-row"><div class="donut-legend-dot" style="background:var(--blue)"></div><span class="donut-legend-label">In Progress</span><span class="donut-legend-val">'+counts.ip+'</span></div>' +
+                '<div class="donut-legend-row"><div class="donut-legend-dot" style="background:var(--green)"></div><span class="donut-legend-label">Completed</span><span class="donut-legend-val">'+counts.done+'</span></div>' +
+                '<div class="donut-legend-row"><div class="donut-legend-dot" style="background:var(--red)"></div><span class="donut-legend-label">Blocked</span><span class="donut-legend-val">'+counts.bl+'</span></div>' +
+            '</div>' +
+        '</div>';
+}
+
+function renderMilestones() {
+    document.getElementById('milestones').innerHTML = MILESTONES.map(function(m){
+        var isGate = m.name.indexOf('GATE')>-1;
+        return '<div class="milestone-row"><div class="ms-date">'+m.date+'</div><div class="ms-dot" style="background:'+(isGate?'var(--vermilion)':'var(--blue)')+'"></div><div class="ms-name" style="font-weight:'+(isGate?'700':'500')+';color:'+(isGate?'var(--vermilion)':'var(--text)')+'">'+m.name+'</div></div>';
+    }).join('');
+}
+
+function renderSessions() {
+    document.getElementById('sessionGrid').innerHTML = SESSIONS.map(function(s){
+        var sTasks = state.tasks.filter(function(t){return t.session===s.id||t.session.indexOf(s.id+'\u2192')===0});
+        var sDone = sTasks.filter(function(t){return t.status==='completed'}).length;
+        return '<div class="session-card"><div class="session-card-header '+s.color+'"><h3>'+s.id+': '+s.name+'</h3><span class="date">'+s.date+' \u2022 '+s.dur+'</span></div><div class="session-card-body"><div class="deliverables">Feeds: '+s.delivs.map(function(d){return '<span>'+d+'</span>'}).join(' ')+'</div>'+s.obj.map(function(o){return '<div class="session-obj">'+o+'</div>'}).join('')+'<div class="session-stat">Tasks: '+sTasks.length+' | Done: '+sDone+'</div></div></div>';
+    }).join('');
+}
+
+function renderTasks() {
+    var filtered = state.tasks.slice();
+    if (taskFilter !== 'all') {
+        if (['S1','S2','S3','S4','S5','S6'].indexOf(taskFilter) > -1) {
+            filtered = filtered.filter(function(t){return t.session===taskFilter||t.session.indexOf(taskFilter+'\u2192')===0});
+        } else if (taskFilter === 'critical') {
+            filtered = filtered.filter(function(t){return t.pri==='critical'});
+        } else {
+            filtered = filtered.filter(function(t){return t.status===taskFilter});
+        }
+    }
+    var col = taskSortCol, dir = taskSortDir;
+    filtered.sort(function(a,b) {
+        var va = a[col]||'', vb = b[col]||'';
+        if (col==='pri') { var po={critical:0,high:1,medium:2,low:3}; va=po[va]||4; vb=po[vb]||4; }
+        var cmp = va<vb?-1:va>vb?1:0;
+        return dir==='asc'?cmp:-cmp;
+    });
+    document.getElementById('taskCount').textContent = filtered.length + ' tasks';
+    document.getElementById('taskBody').innerHTML = filtered.map(function(t){
+        return '<tr class="'+(t.status==='completed'?'completed-row':'')+'"><td><div class="check-toggle '+(t.chk?'checked':'')+'" onclick="toggleCheck(\''+t.id+'\')"></div></td><td style="font-weight:700;font-size:12px;color:var(--text-sec)">'+t.id+'</td><td style="font-weight:500">'+t.task+'</td><td style="font-size:12px">'+t.session+'</td><td><div class="owner"><div class="owner-avatar '+t.oc+'">'+t.oc.toUpperCase()+'</div>'+t.owner+'</div></td><td><span class="deliv-tag">'+t.deliv+'</span></td><td style="font-size:12px;white-space:nowrap">'+t.target+'</td><td><span class="priority '+t.pri+'">'+t.pri.toUpperCase()+'</span></td><td><select class="status-select" onchange="updateTaskStatus(\''+t.id+'\',this.value)"><option value="not-started"'+(t.status==='not-started'?' selected':'')+'>Not Started</option><option value="in-progress"'+(t.status==='in-progress'?' selected':'')+'>In Progress</option><option value="completed"'+(t.status==='completed'?' selected':'')+'>Completed</option><option value="blocked"'+(t.status==='blocked'?' selected':'')+'>Blocked</option><option value="at-risk"'+(t.status==='at-risk'?' selected':'')+'>At Risk</option></select></td><td style="font-size:11px;color:var(--text-sec)">'+(t.dep.length?t.dep.join(', '):'\u2014')+'</td></tr>';
+    }).join('');
+
+    var filters = [{l:'All',v:'all'},{l:'Critical',v:'critical'},{l:'In Progress',v:'in-progress'},{l:'Blocked',v:'blocked'},{l:'S1',v:'S1'},{l:'S2',v:'S2'},{l:'S3',v:'S3'},{l:'S4',v:'S4'},{l:'S5',v:'S5'},{l:'S6',v:'S6'}];
+    document.getElementById('taskFilters').innerHTML = filters.map(function(f){
+        return '<button class="task-filter-btn '+(taskFilter===f.v?'active':'')+'" onclick="setTaskFilter(\''+f.v+'\')">'+f.l+'</button>';
+    }).join('');
+}
+
+function renderDeliverables() {
+    document.getElementById('delivBody').innerHTML = state.deliverables.map(function(d){
+        var barColor = d.progress===100?'var(--green)':d.progress>50?'var(--blue)':'var(--yellow)';
+        var isGate = d.id==='BP';
+        return '<tr><td style="font-weight:700;color:'+(isGate?'var(--vermilion)':'var(--dark-blue)')+'">'+d.id+'</td><td style="font-weight:600">'+d.name+'</td><td><div class="owner"><div class="owner-avatar '+d.oc+'">'+d.oc.toUpperCase()+'</div>'+d.owner+'</div></td><td style="white-space:nowrap">'+d.target+'</td><td style="font-size:12px;color:var(--text-sec)">'+d.gate+'</td><td style="width:140px"><div class="prog-bar-wrap"><div class="prog-bar-track"><div class="prog-bar-fill" style="width:'+d.progress+'%;background:'+barColor+'"></div></div><input type="number" class="prog-input" min="0" max="100" value="'+d.progress+'" onchange="updateDelivProgress(\''+d.id+'\',this.value)">%</div></td><td><select class="status-select" onchange="updateDelivStatus(\''+d.id+'\',this.value)"><option value="not-started"'+(d.status==='not-started'?' selected':'')+'>Not Started</option><option value="in-progress"'+(d.status==='in-progress'?' selected':'')+'>In Progress</option><option value="completed"'+(d.status==='completed'?' selected':'')+'>Completed</option><option value="blocked"'+(d.status==='blocked'?' selected':'')+'>Blocked</option></select></td></tr>';
+    }).join('');
+}
+
+function renderDeps() {
+    document.getElementById('depList').innerHTML = DEPS.map(function(d){
+        return '<div class="dep-flow"><div class="dep-node" style="background:'+d.c+'20;color:'+d.c+';border:1px solid '+d.c+'40">'+d.from+'</div><div class="dep-arrow">\u2192</div><div class="dep-node" style="background:'+d.c+'20;color:'+d.c+';border:1px solid '+d.c+'40">'+d.to+'</div></div>';
+    }).join('');
+}
+
+function renderRisks() {
+    document.getElementById('riskList').innerHTML = RISKS.map(function(r){
+        var bg = r.st==='Monitoring'?'#dbeafe':'#fef9c3', color = r.st==='Monitoring'?'#2563eb':'#ca8a04';
+        return '<div class="risk-row"><div class="risk-severity '+r.sev+'"></div><div class="risk-info"><div class="risk-name">'+r.name+'</div><div class="risk-detail">'+r.detail+'</div></div><div class="risk-badge" style="background:'+bg+';color:'+color+'">'+r.st+'</div></div>';
+    }).join('');
+}
+
+// ═══════════════════════════════════════
+// INTERACTIONS
+// ═══════════════════════════════════════
+function toggleCheck(id) {
+    var t = state.tasks.find(function(x){return x.id===id});
+    if(t) { t.chk=!t.chk; if(t.chk&&t.status==='not-started')t.status='completed'; if(!t.chk&&t.status==='completed')t.status='not-started'; renderAll(); }
+}
+function updateTaskStatus(id, val) {
+    var t = state.tasks.find(function(x){return x.id===id});
+    if(t) { t.status=val; t.chk=val==='completed'; renderAll(); }
+}
+function updateDelivStatus(id, val) {
+    var d = state.deliverables.find(function(x){return x.id===id});
+    if(d) { d.status=val; if(val==='completed')d.progress=100; renderAll(); }
+}
+function updateDelivProgress(id, val) {
+    var d = state.deliverables.find(function(x){return x.id===id});
+    if(d) { d.progress=Math.min(100,Math.max(0,parseInt(val)||0)); renderAll(); }
+}
+function setTaskFilter(val) { taskFilter=val; renderTasks(); }
+function sortTasks(col) {
+    if(taskSortCol===col) taskSortDir=taskSortDir==='asc'?'desc':'asc';
+    else { taskSortCol=col; taskSortDir='asc'; }
+    renderTasks();
+}
+
+function renderAll() {
+    renderKPIs(); renderPhases(); renderWeeklyChart(); renderDelivChart(); renderMilestones();
+    renderSessions(); renderTasks(); renderDeliverables();
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+(function init() {
+    // Load local state as baseline
+    loadLocalState();
+    renderTabs();
+    renderAll();
+    renderDeps();
+    renderRisks();
+
+    // Check for saved GitHub config
+    ghConfig = getGHConfig();
+    if (ghConfig && ghConfig.token) {
+        syncMode = 'github';
+        setSyncStatus('syncing', 'Connecting...');
+        fetchGitHubState(function(ok) {
+            if (ok) {
+                syncMode = 'github';
+                renderAll();
+                updateSyncUI();
+            } else {
+                syncMode = 'offline';
+                updateSyncUI();
+                showToast('Could not connect to GitHub. Working offline.', 'info');
+            }
+        });
+    } else {
+        // First time — show setup
+        showSetup();
+    }
+
+    // Auto-sync every 60 seconds if connected
+    setInterval(function() {
+        if (syncMode === 'github') {
+            saveLocalState();
+            pushStateToGitHub();
+        } else {
+            saveLocalState();
+        }
+    }, 60000);
+})();
+</script>
+
+</body>
+</html>
