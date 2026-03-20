@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BITPT 270 — SLSMC Project Portal</title>
-    <!-- ZERO EXTERNAL DEPENDENCIES — GitHub API sync built-in -->
+    <title>BITPT 270 — St. Lawrence Seaway Project Portal</title>
+    <!-- SheetJS for Excel export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         :root {
             --dark-blue: #001E35;
@@ -241,7 +242,7 @@
         <p>This portal syncs all task and deliverable data through GitHub so your entire team sees the same status in real time. Enter the connection details below (one-time setup).</p>
         <div class="error-msg" id="setupError"></div>
         <label>Repository Owner (GitHub username or org)</label>
-        <input type="text" id="inputOwner" placeholder="e.g. bitsummit-io">
+        <input type="text" id="inputOwner" placeholder="e.g. bitsummit-io" value="aabidi2010">
         <label>Repository Name</label>
         <input type="text" id="inputRepo" placeholder="e.g. slsmc-portal" value="slsmc-portal">
         <label>Personal Access Token</label>
@@ -258,7 +259,7 @@
 <div class="container">
     <div class="header">
         <div>
-            <h1><span>BITSUMMIT</span> — SLSMC Project Portal</h1>
+            <h1><span>BITSUMMIT</span> — St. Lawrence Seaway Project Portal</h1>
             <div class="header-meta">BITPT 270 &bull; Domino to Exchange Online Migration &bull; Phase 1: Discovery &amp; Design</div>
         </div>
         <div class="header-right">
@@ -739,16 +740,125 @@ function saveLocalState() {
 }
 
 function exportStatus() {
-    var lines = ['BITPT 270 \u2014 SLSMC Phase 1 Status Export', 'Date: ' + new Date().toLocaleString(), ''];
-    lines.push('=== DELIVERABLES ===');
-    state.deliverables.forEach(function(d){lines.push(d.id+' | '+d.name+' | '+d.progress+'% | '+d.status)});
-    lines.push('','=== TASKS ===');
-    state.tasks.forEach(function(t){lines.push(t.id+' | '+t.task+' | '+t.owner+' | '+t.status+(t.chk?' | DONE':''))});
-    var blob = new Blob([lines.join('\n')], {type:'text/plain'});
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'SLSMC_Status_'+new Date().toISOString().slice(0,10)+'.txt';
-    a.click();
+    var wb = XLSX.utils.book_new();
+
+    /* ── Color palette matching dashboard ── */
+    var darkBlue = '001E35';
+    var vermilion = 'F12300';
+    var white = 'FFFFFF';
+    var lightGray = 'F4F6F9';
+    var green = '22C55E';
+    var yellow = 'F59E0B';
+    var blue = '3B82F6';
+    var red = 'EF4444';
+    var gray = '94A3B8';
+    var textDark = '1A1A2E';
+
+    function statusColor(s) {
+        if (s==='completed') return green;
+        if (s==='in-progress') return blue;
+        if (s==='blocked') return red;
+        return gray;
+    }
+    function priColor(p) {
+        if (p==='critical') return red;
+        if (p==='high') return yellow;
+        if (p==='medium') return blue;
+        return gray;
+    }
+    function headerStyle() {
+        return {font:{bold:true,color:{rgb:white},sz:12},fill:{fgColor:{rgb:darkBlue}},alignment:{horizontal:'center',vertical:'center'},border:{bottom:{style:'thin',color:{rgb:vermilion}}}};
+    }
+    function cellStyle(bg) {
+        return {font:{color:{rgb:textDark},sz:11},fill:{fgColor:{rgb:bg||white}},alignment:{vertical:'center',wrapText:true},border:{bottom:{style:'thin',color:{rgb:'E2E8F0'}}}};
+    }
+    function statusCell(val) {
+        var label = val.replace('-',' ').replace(/\b\w/g,function(l){return l.toUpperCase()});
+        return {v:label,s:{font:{bold:true,color:{rgb:white},sz:11},fill:{fgColor:{rgb:statusColor(val)}},alignment:{horizontal:'center',vertical:'center'}}};
+    }
+
+    /* ── Summary Sheet ── */
+    var totalTasks = state.tasks.length;
+    var doneTasks = state.tasks.filter(function(t){return t.status==='completed'}).length;
+    var ipTasks = state.tasks.filter(function(t){return t.status==='in-progress'}).length;
+    var blockedTasks = state.tasks.filter(function(t){return t.status==='blocked'}).length;
+    var doneDelivs = state.deliverables.filter(function(d){return d.status==='completed'}).length;
+
+    var sumData = [
+        [{v:'BITSUMMIT — St. Lawrence Seaway Project Portal',s:{font:{bold:true,color:{rgb:white},sz:16},fill:{fgColor:{rgb:darkBlue}},alignment:{horizontal:'center'}}}],
+        [{v:'BITPT 270 • Domino to Exchange Online Migration • Phase 1: Discovery & Design',s:{font:{color:{rgb:white},sz:11},fill:{fgColor:{rgb:darkBlue}},alignment:{horizontal:'center'}}}],
+        [{v:'Status Export: '+new Date().toLocaleString(),s:{font:{color:{rgb:white},sz:10,italic:true},fill:{fgColor:{rgb:darkBlue}},alignment:{horizontal:'center'}}}],
+        [],
+        [{v:'Metric',s:headerStyle()},{v:'Value',s:headerStyle()},{v:'',s:headerStyle()}],
+        [{v:'Total Tasks',s:cellStyle(lightGray)},{v:totalTasks,s:cellStyle(lightGray)}],
+        [{v:'Completed',s:cellStyle()},{v:doneTasks,s:{font:{bold:true,color:{rgb:green},sz:12},alignment:{horizontal:'left'}}}],
+        [{v:'In Progress',s:cellStyle(lightGray)},{v:ipTasks,s:{font:{bold:true,color:{rgb:blue},sz:12},fill:{fgColor:{rgb:lightGray}},alignment:{horizontal:'left'}}}],
+        [{v:'Blocked',s:cellStyle()},{v:blockedTasks,s:{font:{bold:true,color:{rgb:red},sz:12},alignment:{horizontal:'left'}}}],
+        [{v:'Overall Progress',s:cellStyle(lightGray)},{v:Math.round(doneTasks/totalTasks*100)+'%',s:{font:{bold:true,color:{rgb:vermilion},sz:14},fill:{fgColor:{rgb:lightGray}},alignment:{horizontal:'left'}}}],
+        [],
+        [{v:'Deliverables Signed Off',s:cellStyle()},{v:doneDelivs+' / '+state.deliverables.length,s:{font:{bold:true,color:{rgb:vermilion},sz:12},alignment:{horizontal:'left'}}}]
+    ];
+    var ws1 = XLSX.utils.aoa_to_sheet(sumData);
+    ws1['!merges'] = [{s:{r:0,c:0},e:{r:0,c:2}},{s:{r:1,c:0},e:{r:1,c:2}},{s:{r:2,c:0},e:{r:2,c:2}}];
+    ws1['!cols'] = [{wch:25},{wch:15},{wch:10}];
+    XLSX.utils.book_append_sheet(wb, ws1, 'Summary');
+
+    /* ── Tasks Sheet ── */
+    var tHeader = ['ID','Task','Owner','Session','Deliverable','Target','Priority','Status','Done'];
+    var tRows = [tHeader.map(function(h){return {v:h,s:headerStyle()}})];
+    state.tasks.forEach(function(t,i){
+        var bg = i%2===0 ? white : lightGray;
+        tRows.push([
+            {v:t.id,s:{font:{bold:true,color:{rgb:vermilion},sz:11},fill:{fgColor:{rgb:bg}},alignment:{horizontal:'center'}}},
+            {v:t.task,s:cellStyle(bg)},
+            {v:t.owner,s:cellStyle(bg)},
+            {v:t.session,s:cellStyle(bg)},
+            {v:t.deliv,s:cellStyle(bg)},
+            {v:t.target,s:cellStyle(bg)},
+            {v:t.pri.charAt(0).toUpperCase()+t.pri.slice(1),s:{font:{bold:true,color:{rgb:priColor(t.pri)},sz:11},fill:{fgColor:{rgb:bg}},alignment:{horizontal:'center'}}},
+            statusCell(t.status),
+            {v:t.chk?'✓':'',s:{font:{sz:14,color:{rgb:t.chk?green:gray}},fill:{fgColor:{rgb:bg}},alignment:{horizontal:'center'}}}
+        ]);
+    });
+    var ws2 = XLSX.utils.aoa_to_sheet(tRows);
+    ws2['!cols'] = [{wch:6},{wch:55},{wch:12},{wch:10},{wch:10},{wch:12},{wch:10},{wch:14},{wch:6}];
+    XLSX.utils.book_append_sheet(wb, ws2, 'Tasks');
+
+    /* ── Deliverables Sheet ── */
+    var dHeader = ['ID','Deliverable','Progress','Status'];
+    var dRows = [dHeader.map(function(h){return {v:h,s:headerStyle()}})];
+    state.deliverables.forEach(function(d,i){
+        var bg = i%2===0 ? white : lightGray;
+        dRows.push([
+            {v:d.id,s:{font:{bold:true,color:{rgb:vermilion},sz:11},fill:{fgColor:{rgb:bg}},alignment:{horizontal:'center'}}},
+            {v:d.name,s:cellStyle(bg)},
+            {v:d.progress+'%',s:{font:{bold:true,color:{rgb:d.progress>=100?green:d.progress>0?blue:gray},sz:11},fill:{fgColor:{rgb:bg}},alignment:{horizontal:'center'}}},
+            statusCell(d.status)
+        ]);
+    });
+    var ws3 = XLSX.utils.aoa_to_sheet(dRows);
+    ws3['!cols'] = [{wch:6},{wch:50},{wch:12},{wch:14}];
+    XLSX.utils.book_append_sheet(wb, ws3, 'Deliverables');
+
+    /* ── Risks Sheet ── */
+    var rHeader = ['Risk','Detail','Severity','Status'];
+    var rRows = [rHeader.map(function(h){return {v:h,s:headerStyle()}})];
+    RISKS.forEach(function(r,i){
+        var bg = i%2===0 ? white : lightGray;
+        var sevC = r.sev==='high'?red:r.sev==='medium'?yellow:green;
+        rRows.push([
+            {v:r.name,s:{font:{bold:true,color:{rgb:textDark},sz:11},fill:{fgColor:{rgb:bg}}}},
+            {v:r.detail,s:cellStyle(bg)},
+            {v:r.sev.charAt(0).toUpperCase()+r.sev.slice(1),s:{font:{bold:true,color:{rgb:sevC},sz:11},fill:{fgColor:{rgb:bg}},alignment:{horizontal:'center'}}},
+            {v:r.st,s:cellStyle(bg)}
+        ]);
+    });
+    var ws4 = XLSX.utils.aoa_to_sheet(rRows);
+    ws4['!cols'] = [{wch:30},{wch:50},{wch:12},{wch:14}];
+    XLSX.utils.book_append_sheet(wb, ws4, 'Risks');
+
+    /* ── Write and download ── */
+    XLSX.writeFile(wb, 'SLSMC_Status_'+new Date().toISOString().slice(0,10)+'.xlsx');
 }
 
 // ═══════════════════════════════════════
