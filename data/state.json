@@ -117,8 +117,8 @@
     },
     {
       "id": "T24",
-      "status": "not-started",
-      "chk": false
+      "status": "completed",
+      "chk": true
     },
     {
       "id": "T25",
@@ -127,8 +127,8 @@
     },
     {
       "id": "T26",
-      "status": "not-started",
-      "chk": false
+      "status": "completed",
+      "chk": true
     },
     {
       "id": "T27",
@@ -298,6 +298,6 @@
       "progress": 0
     }
   ],
-  "savedAt": "2026-03-20T15:30:56.331Z",
+  "savedAt": "2026-03-20T15:31:42.542Z",
   "savedBy": "portal"
 }
