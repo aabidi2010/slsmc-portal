@@ -264,13 +264,13 @@
   "deliverables": [
     {
       "id": "D1",
-      "status": "not-started",
-      "progress": 60
+      "status": "in-progress",
+      "progress": 50
     },
     {
       "id": "D2",
-      "status": "not-started",
-      "progress": 0
+      "status": "in-progress",
+      "progress": 60
     },
     {
       "id": "D3",
@@ -298,6 +298,6 @@
       "progress": 0
     }
   ],
-  "savedAt": "2026-03-30T17:32:09.713Z",
+  "savedAt": "2026-03-30T17:33:09.713Z",
   "savedBy": "portal"
 }
