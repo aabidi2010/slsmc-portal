@@ -274,17 +274,17 @@
     },
     {
       "id": "D3",
-      "status": "not-started",
+      "status": "in-progress",
       "progress": 0
     },
     {
       "id": "D4",
-      "status": "not-started",
+      "status": "in-progress",
       "progress": 0
     },
     {
       "id": "D5",
-      "status": "not-started",
+      "status": "in-progress",
       "progress": 0
     },
     {
@@ -298,6 +298,6 @@
       "progress": 0
     }
   ],
-  "savedAt": "2026-04-09T14:28:44.922Z",
+  "savedAt": "2026-04-09T14:29:44.919Z",
   "savedBy": "portal"
 }
