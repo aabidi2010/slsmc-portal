@@ -12,18 +12,18 @@
     },
     {
       "id": "T03",
-      "status": "in-progress",
-      "chk": false
+      "status": "completed",
+      "chk": true
     },
     {
       "id": "T04",
-      "status": "in-progress",
-      "chk": false
+      "status": "completed",
+      "chk": true
     },
     {
       "id": "T05",
-      "status": "in-progress",
-      "chk": false
+      "status": "completed",
+      "chk": true
     },
     {
       "id": "T06",
@@ -42,13 +42,13 @@
     },
     {
       "id": "T09",
-      "status": "in-progress",
-      "chk": false
+      "status": "completed",
+      "chk": true
     },
     {
       "id": "T10",
-      "status": "in-progress",
-      "chk": false
+      "status": "completed",
+      "chk": true
     },
     {
       "id": "T11",
@@ -72,7 +72,7 @@
     },
     {
       "id": "T15",
-      "status": "not-started",
+      "status": "in-progress",
       "chk": false
     },
     {
@@ -87,8 +87,8 @@
     },
     {
       "id": "T18",
-      "status": "not-started",
-      "chk": false
+      "status": "completed",
+      "chk": true
     },
     {
       "id": "T19",
@@ -298,6 +298,6 @@
       "progress": 50
     }
   ],
-  "savedAt": "2026-04-13T18:02:21.622Z",
+  "savedAt": "2026-04-13T18:03:38.818Z",
   "savedBy": "portal"
 }
