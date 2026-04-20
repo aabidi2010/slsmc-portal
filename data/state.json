@@ -147,13 +147,13 @@
     },
     {
       "id": "T30",
-      "status": "in-progress",
-      "chk": false
+      "status": "completed",
+      "chk": true
     },
     {
       "id": "T31",
-      "status": "in-progress",
-      "chk": false
+      "status": "completed",
+      "chk": true
     },
     {
       "id": "T32",
@@ -162,13 +162,13 @@
     },
     {
       "id": "T33",
-      "status": "in-progress",
-      "chk": false
+      "status": "completed",
+      "chk": true
     },
     {
       "id": "T34",
-      "status": "in-progress",
-      "chk": false
+      "status": "completed",
+      "chk": true
     },
     {
       "id": "T35",
@@ -182,8 +182,8 @@
     },
     {
       "id": "T37",
-      "status": "not-started",
-      "chk": false
+      "status": "completed",
+      "chk": true
     },
     {
       "id": "T38",
@@ -227,18 +227,18 @@
     },
     {
       "id": "T46",
-      "status": "in-progress",
-      "chk": false
+      "status": "completed",
+      "chk": true
     },
     {
       "id": "T47",
-      "status": "in-progress",
-      "chk": false
+      "status": "completed",
+      "chk": true
     },
     {
       "id": "T48",
-      "status": "in-progress",
-      "chk": false
+      "status": "completed",
+      "chk": true
     },
     {
       "id": "T49",
@@ -298,6 +298,6 @@
       "progress": 50
     }
   ],
-  "savedAt": "2026-04-20T15:27:14.327Z",
+  "savedAt": "2026-04-20T15:28:14.328Z",
   "savedBy": "portal"
 }
