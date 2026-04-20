@@ -137,8 +137,8 @@
     },
     {
       "id": "T28",
-      "status": "in-progress",
-      "chk": false
+      "status": "completed",
+      "chk": true
     },
     {
       "id": "T29",
@@ -192,7 +192,7 @@
     },
     {
       "id": "T39",
-      "status": "not-started",
+      "status": "in-progress",
       "chk": false
     },
     {
@@ -298,6 +298,6 @@
       "progress": 50
     }
   ],
-  "savedAt": "2026-04-20T15:26:14.329Z",
+  "savedAt": "2026-04-20T15:27:14.327Z",
   "savedBy": "portal"
 }
