@@ -264,33 +264,33 @@
   "deliverables": [
     {
       "id": "D1",
-      "status": "in-progress",
-      "progress": 75
+      "status": "completed",
+      "progress": 100
     },
     {
       "id": "D2",
-      "status": "in-progress",
-      "progress": 60
+      "status": "completed",
+      "progress": 100
     },
     {
       "id": "D3",
-      "status": "in-progress",
-      "progress": 70
+      "status": "completed",
+      "progress": 100
     },
     {
       "id": "D4",
-      "status": "in-progress",
-      "progress": 50
+      "status": "completed",
+      "progress": 100
     },
     {
       "id": "D5",
-      "status": "in-progress",
-      "progress": 50
+      "status": "completed",
+      "progress": 100
     },
     {
       "id": "D6",
-      "status": "in-progress",
-      "progress": 50
+      "status": "completed",
+      "progress": 100
     },
     {
       "id": "BP",
@@ -298,6 +298,6 @@
       "progress": 50
     }
   ],
-  "savedAt": "2026-04-20T15:25:31.440Z",
+  "savedAt": "2026-04-20T15:26:14.329Z",
   "savedBy": "portal"
 }
