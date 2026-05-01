@@ -1,0 +1,486 @@
+{
+  "tasks": [
+    {
+      "id": "T01",
+      "desc": "Provision Entra Connect VM and configure PHS + Seamless SSO",
+      "owner": "Sachin",
+      "cat": "identity",
+      "start": "2026-04-13",
+      "end": "2026-04-16",
+      "status": "not-started",
+      "pri": "critical",
+      "chk": false
+    },
+    {
+      "id": "T02",
+      "desc": "Configure Password Writeback and dry-run sync validation (48hrs clean)",
+      "owner": "Sachin",
+      "cat": "identity",
+      "start": "2026-04-16",
+      "end": "2026-04-18",
+      "status": "not-started",
+      "pri": "high",
+      "chk": false
+    },
+    {
+      "id": "T03",
+      "desc": "UPN / ProxyAddress hygiene — script normalization and reconcile exceptions",
+      "owner": "Jerald",
+      "cat": "identity",
+      "start": "2026-04-14",
+      "end": "2026-04-18",
+      "status": "not-started",
+      "pri": "critical",
+      "chk": false
+    },
+    {
+      "id": "T04",
+      "desc": "Remediate identity conflicts from Phase 1 IdFix report",
+      "owner": "Jerald",
+      "cat": "identity",
+      "start": "2026-04-14",
+      "end": "2026-04-18",
+      "status": "not-started",
+      "pri": "high",
+      "chk": false
+    },
+    {
+      "id": "T05",
+      "desc": "Configure Entra ID group structure for wave-based migration",
+      "owner": "Sachin",
+      "cat": "identity",
+      "start": "2026-04-16",
+      "end": "2026-04-18",
+      "status": "not-started",
+      "pri": "medium",
+      "chk": false
+    },
+    {
+      "id": "T06",
+      "desc": "Deploy Conditional Access baseline policies (report-only → enforce)",
+      "owner": "Sachin",
+      "cat": "security",
+      "start": "2026-04-21",
+      "end": "2026-04-23",
+      "status": "not-started",
+      "pri": "critical",
+      "chk": false
+    },
+    {
+      "id": "T07",
+      "desc": "Enable mailbox auditing (owner/delegate/admin actions)",
+      "owner": "Sachin",
+      "cat": "security",
+      "start": "2026-04-23",
+      "end": "2026-04-24",
+      "status": "not-started",
+      "pri": "high",
+      "chk": false
+    },
+    {
+      "id": "T08",
+      "desc": "Configure retention policies & EOP (7yr email, 3yr calendar, SCL thresholds)",
+      "owner": "Sachin",
+      "cat": "security",
+      "start": "2026-04-24",
+      "end": "2026-04-25",
+      "status": "not-started",
+      "pri": "high",
+      "chk": false
+    },
+    {
+      "id": "T09",
+      "desc": "Validate Canadian data residency (tenant homed in Canada Central)",
+      "owner": "Sachin",
+      "cat": "security",
+      "start": "2026-04-21",
+      "end": "2026-04-22",
+      "status": "not-started",
+      "pri": "critical",
+      "chk": false
+    },
+    {
+      "id": "T10",
+      "desc": "Configure audit logging and compliance center dashboards",
+      "owner": "Sachin",
+      "cat": "security",
+      "start": "2026-04-24",
+      "end": "2026-04-25",
+      "status": "not-started",
+      "pri": "medium",
+      "chk": false
+    },
+    {
+      "id": "T11",
+      "desc": "Add seaway.ca as accepted domain; configure email address policies",
+      "owner": "Sachin",
+      "cat": "mail",
+      "start": "2026-04-18",
+      "end": "2026-04-19",
+      "status": "not-started",
+      "pri": "critical",
+      "chk": false
+    },
+    {
+      "id": "T12",
+      "desc": "Configure inbound/outbound connectors (Proofpoint ↔ EXO)",
+      "owner": "Sachin",
+      "cat": "mail",
+      "start": "2026-04-19",
+      "end": "2026-04-21",
+      "status": "not-started",
+      "pri": "high",
+      "chk": false
+    },
+    {
+      "id": "T13",
+      "desc": "Test connector bidirectional mail flow (Get-MessageTrace)",
+      "owner": "Sachin",
+      "cat": "mail",
+      "start": "2026-04-21",
+      "end": "2026-04-22",
+      "status": "not-started",
+      "pri": "critical",
+      "chk": false
+    },
+    {
+      "id": "T14",
+      "desc": "Pre-create shared mailboxes & permissions (FullAccess, SendAs)",
+      "owner": "Sachin",
+      "cat": "mail",
+      "start": "2026-04-22",
+      "end": "2026-04-23",
+      "status": "not-started",
+      "pri": "high",
+      "chk": false
+    },
+    {
+      "id": "T15",
+      "desc": "DNS & certificate readiness (TTL, SPF, DKIM, DMARC, Autodiscover)",
+      "owner": "Sachin",
+      "cat": "mail",
+      "start": "2026-04-27",
+      "end": "2026-04-29",
+      "status": "not-started",
+      "pri": "critical",
+      "chk": false
+    },
+    {
+      "id": "T16",
+      "desc": "Provision Transend migration server (Windows Server 2019/2022, 8vCPU, 32GB RAM)",
+      "owner": "Jerald",
+      "cat": "transend",
+      "start": "2026-04-13",
+      "end": "2026-04-18",
+      "status": "not-started",
+      "pri": "critical",
+      "chk": false
+    },
+    {
+      "id": "T17",
+      "desc": "Procure Transend Migrator licenses (per-mailbox model via CDW)",
+      "owner": "Sushma",
+      "cat": "transend",
+      "start": "2026-04-23",
+      "end": "2026-04-24",
+      "status": "not-started",
+      "pri": "critical",
+      "chk": false
+    },
+    {
+      "id": "T18",
+      "desc": "Install and configure Transend Migrator Enterprise Edition",
+      "owner": "Jerald",
+      "cat": "transend",
+      "start": "2026-04-24",
+      "end": "2026-04-28",
+      "status": "not-started",
+      "pri": "critical",
+      "chk": false
+    },
+    {
+      "id": "T19",
+      "desc": "Connectivity testing: Transend server → Domino servers (5 servers)",
+      "owner": "Jerald",
+      "cat": "transend",
+      "start": "2026-04-24",
+      "end": "2026-04-26",
+      "status": "not-started",
+      "pri": "high",
+      "chk": false
+    },
+    {
+      "id": "T20",
+      "desc": "Connectivity testing: Transend server → Exchange Online (HTTPS 443)",
+      "owner": "Jerald",
+      "cat": "transend",
+      "start": "2026-04-24",
+      "end": "2026-04-26",
+      "status": "not-started",
+      "pri": "high",
+      "chk": false
+    },
+    {
+      "id": "T21",
+      "desc": "Configure Transend migration profiles (mail, calendar, contacts, delegation)",
+      "owner": "Jerald",
+      "cat": "transend",
+      "start": "2026-04-24",
+      "end": "2026-04-28",
+      "status": "not-started",
+      "pri": "high",
+      "chk": false
+    },
+    {
+      "id": "T22",
+      "desc": "Configure Transend pre-seeding and delta sync profiles",
+      "owner": "Jerald",
+      "cat": "transend",
+      "start": "2026-04-26",
+      "end": "2026-04-28",
+      "status": "not-started",
+      "pri": "high",
+      "chk": false
+    },
+    {
+      "id": "T23",
+      "desc": "Run test migration of 5–10 sample mailboxes and validate fidelity",
+      "owner": "Jerald",
+      "cat": "transend",
+      "start": "2026-04-28",
+      "end": "2026-04-30",
+      "status": "not-started",
+      "pri": "critical",
+      "chk": false
+    },
+    {
+      "id": "T24",
+      "desc": "Finalize Pilot wave user list (10–15 users, full complexity spectrum)",
+      "owner": "Sushma",
+      "cat": "wave",
+      "start": "2026-04-28",
+      "end": "2026-04-28",
+      "status": "not-started",
+      "pri": "high",
+      "chk": false
+    },
+    {
+      "id": "T25",
+      "desc": "Pre-seed pilot mailboxes (bulk content transfer 2–3 days before cutover)",
+      "owner": "Jerald",
+      "cat": "wave",
+      "start": "2026-04-28",
+      "end": "2026-04-29",
+      "status": "not-started",
+      "pri": "medium",
+      "chk": false
+    },
+    {
+      "id": "T26",
+      "desc": "Pilot cutover weekend (final delta sync → disable Domino → validate)",
+      "owner": "Jerald",
+      "cat": "wave",
+      "start": "2026-05-01",
+      "end": "2026-05-01",
+      "status": "not-started",
+      "pri": "high",
+      "chk": false
+    },
+    {
+      "id": "T27",
+      "desc": "Pilot acceptance sign-off (100% migrated, functionality checklist)",
+      "owner": "Sushma",
+      "cat": "wave",
+      "start": "2026-05-01",
+      "end": "2026-05-01",
+      "status": "not-started",
+      "pri": "critical",
+      "chk": false
+    },
+    {
+      "id": "T28",
+      "desc": "Define go/no-go criteria and cutover runbook for production waves",
+      "owner": "Sushma",
+      "cat": "wave",
+      "start": "2026-04-28",
+      "end": "2026-04-30",
+      "status": "not-started",
+      "pri": "high",
+      "chk": false
+    },
+    {
+      "id": "T29",
+      "desc": "Configure shared mailbox migration strategy and permission mapping",
+      "owner": "Jerald",
+      "cat": "build",
+      "start": "2026-04-22",
+      "end": "2026-04-25",
+      "status": "not-started",
+      "pri": "high",
+      "chk": false
+    },
+    {
+      "id": "T30",
+      "desc": "Configure distribution list migration (Notes Groups → EXO DLs)",
+      "owner": "Jerald",
+      "cat": "build",
+      "start": "2026-04-23",
+      "end": "2026-04-25",
+      "status": "not-started",
+      "pri": "medium",
+      "chk": false
+    },
+    {
+      "id": "T31",
+      "desc": "Build Phase 2 validation test suite",
+      "owner": "Sachin",
+      "cat": "build",
+      "start": "2026-04-28",
+      "end": "2026-04-30",
+      "status": "not-started",
+      "pri": "high",
+      "chk": false
+    },
+    {
+      "id": "T32",
+      "desc": "Phase 2 sign-off: Configuration & Build complete",
+      "owner": "Sushma",
+      "cat": "build",
+      "start": "2026-05-01",
+      "end": "2026-05-01",
+      "status": "not-started",
+      "pri": "critical",
+      "chk": false
+    },
+    {
+      "id": "T33",
+      "desc": "Weekly status calls with SLSMC and CDW",
+      "owner": "Hassan",
+      "cat": "pm",
+      "start": "2026-04-13",
+      "end": "2026-05-01",
+      "status": "ongoing",
+      "pri": "medium",
+      "chk": false
+    },
+    {
+      "id": "T34",
+      "desc": "Maintain risk register and dependency tracker",
+      "owner": "Sushma",
+      "cat": "pm",
+      "start": "2026-04-13",
+      "end": "2026-05-01",
+      "status": "ongoing",
+      "pri": "medium",
+      "chk": false
+    },
+    {
+      "id": "T35",
+      "desc": "Update migration document with build decisions",
+      "owner": "Hassan",
+      "cat": "pm",
+      "start": "2026-04-13",
+      "end": "2026-05-01",
+      "status": "ongoing",
+      "pri": "medium",
+      "chk": false
+    }
+  ],
+  "deliverables": [
+    {
+      "id": "D-P2.1",
+      "status": "not-started",
+      "progress": 0
+    },
+    {
+      "id": "D-P2.2",
+      "status": "not-started",
+      "progress": 0
+    },
+    {
+      "id": "D-P2.3",
+      "status": "not-started",
+      "progress": 0
+    },
+    {
+      "id": "D-P2.4",
+      "status": "not-started",
+      "progress": 0
+    },
+    {
+      "id": "D-P2.5",
+      "status": "not-started",
+      "progress": 0
+    },
+    {
+      "id": "D-P2.6",
+      "status": "not-started",
+      "progress": 0
+    },
+    {
+      "id": "D-P2.7",
+      "status": "not-started",
+      "progress": 0
+    }
+  ],
+  "waves": [
+    {
+      "id": "pilot",
+      "status": "planning",
+      "progress": 0,
+      "go": "Pending"
+    },
+    {
+      "id": "w1",
+      "status": "planning",
+      "progress": 0,
+      "go": "Pending"
+    },
+    {
+      "id": "w2",
+      "status": "planning",
+      "progress": 0,
+      "go": "Pending"
+    },
+    {
+      "id": "w3",
+      "status": "planning",
+      "progress": 0,
+      "go": "Pending"
+    },
+    {
+      "id": "w4",
+      "status": "planning",
+      "progress": 0,
+      "go": "N/A"
+    }
+  ],
+  "transend": [
+    {
+      "id": "q1",
+      "status": "not-started"
+    },
+    {
+      "id": "q2",
+      "status": "not-started"
+    },
+    {
+      "id": "q3",
+      "status": "not-started"
+    },
+    {
+      "id": "q4",
+      "status": "not-started"
+    },
+    {
+      "id": "q5",
+      "status": "not-started"
+    },
+    {
+      "id": "q6",
+      "status": "not-started"
+    }
+  ],
+  "nextTaskNum": 36,
+  "savedAt": "2026-05-01T16:17:02.373Z"
+}
