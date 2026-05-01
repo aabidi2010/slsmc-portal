@@ -24,7 +24,7 @@
     },
     {
       "id": "T03",
-      "desc": "UPN / ProxyAddress hygiene ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ script normalization and reconcile exceptions",
+      "desc": "UPN / ProxyAddress hygiene ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ script normalization and reconcile exceptions",
       "owner": "Jerald",
       "cat": "identity",
       "start": "2026-04-14",
@@ -57,7 +57,7 @@
     },
     {
       "id": "T06",
-      "desc": "Deploy Conditional Access baseline policies (report-only ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ enforce)",
+      "desc": "Deploy Conditional Access baseline policies (report-only ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ enforce)",
       "owner": "Sachin",
       "cat": "security",
       "start": "2026-04-21",
@@ -123,7 +123,7 @@
     },
     {
       "id": "T12",
-      "desc": "Configure inbound/outbound connectors (Proofpoint ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ EXO)",
+      "desc": "Configure inbound/outbound connectors (Proofpoint ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ EXO)",
       "owner": "Sachin",
       "cat": "mail",
       "start": "2026-04-19",
@@ -200,7 +200,7 @@
     },
     {
       "id": "T19",
-      "desc": "Connectivity testing: Transend server ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ Domino servers (5 servers)",
+      "desc": "Connectivity testing: Transend server ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ Domino servers (5 servers)",
       "owner": "Jerald",
       "cat": "transend",
       "start": "2026-04-24",
@@ -211,7 +211,7 @@
     },
     {
       "id": "T20",
-      "desc": "Connectivity testing: Transend server ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ Exchange Online (HTTPS 443)",
+      "desc": "Connectivity testing: Transend server ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ Exchange Online (HTTPS 443)",
       "owner": "Jerald",
       "cat": "transend",
       "start": "2026-04-24",
@@ -244,7 +244,7 @@
     },
     {
       "id": "T23",
-      "desc": "Run test migration of 5ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ10 sample mailboxes and validate fidelity",
+      "desc": "Run test migration of 5ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ10 sample mailboxes and validate fidelity",
       "owner": "Jerald",
       "cat": "transend",
       "start": "2026-04-28",
@@ -255,7 +255,7 @@
     },
     {
       "id": "T24",
-      "desc": "Finalize Pilot wave user list (10ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ15 users, full complexity spectrum)",
+      "desc": "Finalize Pilot wave user list (10ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ15 users, full complexity spectrum)",
       "owner": "Sushma",
       "cat": "wave",
       "start": "2026-04-28",
@@ -266,7 +266,7 @@
     },
     {
       "id": "T25",
-      "desc": "Pre-seed pilot mailboxes (bulk content transfer 2ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ3 days before cutover)",
+      "desc": "Pre-seed pilot mailboxes (bulk content transfer 2ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ3 days before cutover)",
       "owner": "Jerald",
       "cat": "wave",
       "start": "2026-04-28",
@@ -277,7 +277,7 @@
     },
     {
       "id": "T26",
-      "desc": "Pilot cutover weekend (final delta sync ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ disable Domino ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ validate)",
+      "desc": "Pilot cutover weekend (final delta sync ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ disable Domino ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ validate)",
       "owner": "Jerald",
       "cat": "wave",
       "start": "2026-05-01",
@@ -321,7 +321,7 @@
     },
     {
       "id": "T30",
-      "desc": "Configure distribution list migration (Notes Groups ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ EXO DLs)",
+      "desc": "Configure distribution list migration (Notes Groups ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ EXO DLs)",
       "owner": "Jerald",
       "cat": "build",
       "start": "2026-04-23",
@@ -388,37 +388,37 @@
   ],
   "deliverables": [
     {
-      "id": "D-P2.1",
+      "id": "P2-D1",
       "status": "not-started",
       "progress": 0
     },
     {
-      "id": "D-P2.2",
+      "id": "P2-D2",
       "status": "not-started",
       "progress": 0
     },
     {
-      "id": "D-P2.3",
+      "id": "P2-D3",
       "status": "not-started",
       "progress": 0
     },
     {
-      "id": "D-P2.4",
+      "id": "P2-D4",
       "status": "not-started",
       "progress": 0
     },
     {
-      "id": "D-P2.5",
+      "id": "P2-D5",
       "status": "not-started",
       "progress": 0
     },
     {
-      "id": "D-P2.6",
+      "id": "P2-D6",
       "status": "not-started",
       "progress": 0
     },
     {
-      "id": "D-P2.7",
+      "id": "P2-D7",
       "status": "not-started",
       "progress": 0
     }
@@ -482,5 +482,5 @@
     }
   ],
   "nextTaskNum": 36,
-  "savedAt": "2026-05-01T19:14:24.048Z"
+  "savedAt": "2026-05-01T19:15:25.065Z"
 }
